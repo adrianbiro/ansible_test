@@ -1,0 +1,20 @@
+- name: install apache2 package and php
+	tags: apache,apache2,ubuntu
+	apt:
+		name:
+			- apache2
+			- libapache2-mod-php
+		state: latest
+		update_cache: yes
+	when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- name: install apache2 package and php
+	tags: apache,centos,httpd
+	dnf:
+		name:
+			- httpd
+			- php
+		state: latest
+		update_cache: yes
+	when: ansible_distribution  == "CentOS"
+

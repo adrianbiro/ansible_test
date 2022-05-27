@@ -1,0 +1,5 @@
+- name: add ssh key for lofas
+    authorized_key:
+      user: lofas
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEQeU4a+aElisjht094S3v5fL1mSaR/mog8AxAZss1Sl Ansible"
+
