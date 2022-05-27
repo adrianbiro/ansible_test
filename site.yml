@@ -1,0 +1,110 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: updates repo cache (CentOS)
+    tags: always
+    dnf:
+      update_cache: yes
+    changed_when: false
+    when: ansible_distribution  == "CentOS"
+
+
+  - name: updates repo cache (Ubuntu)
+    tags: always
+    apt:
+      update_cache: yes
+    changed_when: false
+    when: ansible_distribution == "Ubuntu"
+
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create user lofas
+    tags: always
+    user:
+      name: lofas
+      groups: root
+
+  - name: add ssh key for lofas
+    tags: always
+    authorized_key:
+      user: lofas
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEQeU4a+aElisjht094S3v5fL1mSaR/mog8AxAZss1Sl Ansible"
+
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+  - name: install apache2 package and php
+    tags: apache,apache2,ubuntu
+    apt:
+      name:
+        - apache2
+        - libapache2-mod-php
+      state: latest
+      update_cache: yes
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: install apache2 package and php
+    tags: apache,centos,httpd
+    dnf:
+      name:
+        - httpd
+        - php
+      state: latest
+      update_cache: yes
+    when: ansible_distribution  == "CentOS"
+
+  - name: start httpd (CentOS)
+    tags: apache,centos,httpd
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+    when: ansible_distribution  == "CentOS"
+
+
+  - name: copy default html file for site
+    tags: apache,apache2,ubuntu
+    copy:
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+
+
+- hosts: db_servers
+  tags: db,mariadb,ubuntu
+  become: true
+  tasks:
+  - name: install mariadb-server package (Ubuntu)
+    apt:
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+  - name: install mariadb package (CentOS)
+    tags: db,mariadb,centos
+    dnf:
+      name: mariabd
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+
+
+
+
+
+
+
+
+
+
+

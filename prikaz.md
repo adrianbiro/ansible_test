@@ -19,3 +19,7 @@
 
 ### ansible-playbook
 `ansible-playbook --ask-become-pass install_apache.yml`
+
+`ansible-playbook --list-tags site.yml`
+`ansible-playbook --tags ubuntu site.yml`
+`ansible-playbook --tags "apache,db" site.yml`

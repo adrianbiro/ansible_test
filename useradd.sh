@@ -1,4 +1,7 @@
 #!/bin/bash
+# toto je manualne co som spravil na ansible usera
+# pouzi playbook namiesto toho
+# len ukazka kolko prace to setri
 user_name="ansible"
 
 # add a user without password

@@ -1,0 +1,47 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates (CentOS)
+    tags: always
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution  == "CentOS"
+
+
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create user lofas
+    tags: always
+    user:
+      name: lofas
+      groups: root
+
+  - name: add ssh key for lofas
+    tags: always
+    authorized_key:
+      user: lofas
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEQeU4a+aElisjht094S3v5fL1mSaR/mog8AxAZss1Sl Ansible"
+
+  - name: add sudoers file for lofas
+    tags: always
+    copy:
+      src: sudoer_lofas
+      dest: /etc/sudoers.d/lofas
+      owner: root
+      group: root
+      mode: 0440
+
