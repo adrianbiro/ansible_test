@@ -1,1 +1,0 @@
-ansible --private-key ~/.ssh/ansible -i inventory all -m ping
